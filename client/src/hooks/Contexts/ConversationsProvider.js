@@ -22,12 +22,14 @@ export function ConversationsProvider({ id, children }) {
       let changed = false;
       const newMessage = { sender, text };
 
+      console.log("The new message", newMessage);
+
       const newConversations = prevConversations.map((conversation) => {
         if (arrayEquality(conversation.recipients, recipients)) {
           changed = true;
           return {
             ...conversation,
-            messages: [...conversation.messages.newMessage],
+            messages: [...conversation.messages, newMessage],
           };
         }
 
@@ -37,21 +39,23 @@ export function ConversationsProvider({ id, children }) {
       if (changed) {
         return newConversations;
       } else {
-        return [...prevConversations, newMessage];
+        return [...prevConversations, { recipients, messages: [newMessage] }];
       }
     });
   }
 
-  function sendMessage(recipients, text, id) {
+  function sendMessage(recipients, text) {
     addMessageToConversation({ recipients, text, sender: id });
   }
 
   const formattedConversations = conversations.map((conversation, index) => {
+    
     const recipients = conversation.recipients.map((recipient) => {
       const contact = contacts.find((contact) => {
         return contact.id === recipient;
       });
 
+      //name fallback
       const name = (contact && contact.name) || recipient;
       return { id: recipient, name };
     });
@@ -67,10 +71,8 @@ export function ConversationsProvider({ id, children }) {
 
     const selected = index === selectedConversationIndex;
 
-    return { ...conversation, messages,recipients, selected };
+    return { ...conversation, messages, recipients, selected };
   });
-
-
 
   const value = {
     conversations: formattedConversations,
