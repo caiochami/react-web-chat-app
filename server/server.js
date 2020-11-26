@@ -1,4 +1,12 @@
-const io = require("socket.io")(5000);
+var app = require("express")();
+var cors = require("cors");
+app.use(cors());
+var http = require("http").createServer(app);
+const io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+  },
+});
 
 io.on("connection", (socket) => {
   const id = socket.handshake.query.id;
@@ -15,4 +23,8 @@ io.on("connection", (socket) => {
       });
     });
   });
+});
+
+http.listen(5000, function () {
+  console.log("CORS-enabled web server listening on port 5000");
 });

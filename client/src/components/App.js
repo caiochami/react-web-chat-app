@@ -4,15 +4,18 @@ import { useStorage } from "../hooks/useStorage";
 import { ContactsProvider } from "../hooks/Contexts/ContactsProvider";
 import { ConversationsProvider } from "../hooks/Contexts/ConversationsProvider";
 import Dashboard from "./Dashboard";
+import SocketProvider from "../hooks/Contexts/SocketProvider";
 function App() {
   const [id, setId] = useStorage("id");
 
   const dashboard = (
-    <ContactsProvider>
-      <ConversationsProvider id={id}>
-        <Dashboard id={id} />
-      </ConversationsProvider>
-    </ContactsProvider>
+    <SocketProvider id={id}>
+      <ContactsProvider>
+        <ConversationsProvider id={id}>
+          <Dashboard id={id} />
+        </ConversationsProvider>
+      </ContactsProvider>
+    </SocketProvider>
   );
   return (
     <ContactsProvider>
